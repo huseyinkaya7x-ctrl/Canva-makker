@@ -41,7 +41,7 @@ Ardından:
 
 ```bash
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+uvicorn webapp.main:app --reload
 ```
 
 Tarayıcıdan:
@@ -69,3 +69,9 @@ Bu alanlar arayüzde opsiyonel olarak elle girilebilir.
 
 Parser, şimdiye kadar kullanılan Sejour tarzı kontrat formatlarına göre hazırlanmıştır.
 Farklı kolon veya satır düzenine sahip kontratlarda `app/parser.py` içindeki kurallar genişletilebilir.
+
+## Vercel ile yayınlama
+
+Bu sürüm Vercel'in zero-config FastAPI desteğine göre hazırlanmıştır. Repository root'unda `app.py` bulunur ve FastAPI uygulamasını `app` adıyla dışa aktarır.
+
+Vercel'de özel Build Command veya Output Directory girmeyin. Root Directory, `app.py` dosyasının bulunduğu repository kökü olmalıdır.

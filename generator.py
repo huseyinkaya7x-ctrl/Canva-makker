@@ -1,4 +1,3 @@
-\
 from pathlib import Path
 import re
 from openpyxl import load_workbook

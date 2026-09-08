@@ -1,4 +1,3 @@
-\
 from pathlib import Path
 import tempfile
 from fastapi import FastAPI, UploadFile, File, Form, Request
