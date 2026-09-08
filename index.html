@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WebBeds Canvas Generator</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="badge">WebBeds</div>
+      <h1>Hotel Canvas Generator</h1>
+      <p class="lead">
+        Sejour tarzı otel kontratını yükle, WebBeds Canvas dosyasını otomatik oluştur.
+      </p>
+
+      <form id="form" action="/generate" method="post" enctype="multipart/form-data">
+        <label class="upload">
+          <span>Kontrat Excel Dosyası</span>
+          <input type="file" name="file" accept=".xlsx" required>
+        </label>
+
+        <div class="grid">
+          <label>
+            Otel adı (opsiyonel)
+            <input type="text" name="hotel_name_override" placeholder="Kontrattan otomatik okunur">
+          </label>
+
+          <label>
+            Şehir (opsiyonel)
+            <input type="text" name="city_override" placeholder="Örn. Fethiye">
+          </label>
+
+          <label class="wide">
+            Adres (opsiyonel)
+            <input type="text" name="address" placeholder="Kontratta yoksa buradan gir">
+          </label>
+
+          <label class="wide">
+            Hotel Website (opsiyonel)
+            <input type="text" name="website" placeholder="https://...">
+          </label>
+
+          <label>
+            Latitude (opsiyonel)
+            <input type="text" name="latitude">
+          </label>
+
+          <label>
+            Longitude (opsiyonel)
+            <input type="text" name="longitude">
+          </label>
+        </div>
+
+        <button id="submit" type="submit">Canvas Oluştur</button>
+        <div id="status"></div>
+      </form>
+
+      <div class="rules">
+        <strong>Aktif kurallar:</strong>
+        <span>PP Single split</span>
+        <span>Extra Bed boş</span>
+        <span>A:C merged korunur</span>
+        <span>Adult Only desteği</span>
+        <span>Family fiyat split</span>
+      </div>
+    </section>
+  </main>
+
+<script>
+const form = document.getElementById("form");
+const status = document.getElementById("status");
+const submit = document.getElementById("submit");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  status.textContent = "Canvas hazırlanıyor...";
+  submit.disabled = true;
+
+  try {
+    const data = new FormData(form);
+    const response = await fetch("/generate", { method: "POST", body: data });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({error: "Bilinmeyen hata"}));
+      throw new Error(err.error || "İşlem başarısız");
+    }
+
+    const blob = await response.blob();
+    const disposition = response.headers.get("content-disposition") || "";
+    const match = disposition.match(/filename="?([^"]+)"?/i);
+    const filename = match ? match[1] : "Hotel_Canva.xlsx";
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    status.textContent = "Canvas hazır.";
+  } catch (err) {
+    status.textContent = "Hata: " + err.message;
+  } finally {
+    submit.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
