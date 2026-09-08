@@ -1,0 +1,9 @@
+[project]
+name = "webbeds-canvas-generator"
+version = "3.0.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi==0.117.1",
+  "python-multipart==0.0.20",
+  "openpyxl==3.1.5",
+]
