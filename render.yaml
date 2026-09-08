@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: webbeds-canvas
-    env: docker
-    plan: free
-    autoDeploy: true
